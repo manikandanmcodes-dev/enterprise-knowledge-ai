@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
+from fastapi import HTTPException
 from pathlib import Path
 
 from backend.src.chroma_store import init_chroma
@@ -59,7 +60,7 @@ def answer_question(question: str) -> dict:
         }
 
     except Exception as e:
-        return {
-            "error": "Query failed",
-            "detail": str(e)
-        }
+        raise HTTPException(
+            status_code = 500,
+            detail = f"RAG Pipeline failed: {str(e)}"
+        )
