@@ -1,18 +1,23 @@
---extra-index-url https://download.pytorch.org/whl/cpu
 langchain==0.1.9
 langchain-community==0.0.25
-pypdf
-python-dotenv
-langchain-groq
+langchain-core==0.1.28
+
+chromadb==0.4.22
+
 sentence-transformers
-python-docx
-chromadb
+torch==2.1.2+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 fastapi
 uvicorn
-tqdm
+python-dotenv
+pypdf
+python-docx
+unstructured
 numpy
 pandas
+tqdm
 slowapi
 limits
 deprecated
-torch==2.1.2+cpu
+langchain-groq
