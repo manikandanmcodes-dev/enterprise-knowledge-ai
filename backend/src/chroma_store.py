@@ -4,7 +4,7 @@ from backend.src.embed_chunks import (
     text_split,
     load_embeddings
 )
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import Chroma
 from backend.config.settings import CHROMA_DIR
 from pathlib import Path
 
