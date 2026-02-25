@@ -1,17 +1,14 @@
 from pathlib import Path
 import os
 
-# backend/
-BASE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..")
-)
+# /app/backend
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATA_DIR = os.path.join(BASE_DIR, "data")
+DATA_DIR = BASE_DIR / "data"
+CHROMA_DIR = BASE_DIR / "chroma_db"
 
-PROMPTS_DIR = os.path.join(BASE_DIR, "prompts")
-PROMPT_TEMPLATE = os.path.join(PROMPTS_DIR, "prompt.py")
-
-CHROMA_DIR = os.path.join(BASE_DIR, "chroma_db")
+PROMPTS_DIR = BASE_DIR / "prompts"
+PROMPT_TEMPLATE = PROMPTS_DIR / "prompt.py"
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 

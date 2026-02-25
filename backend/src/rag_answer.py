@@ -23,7 +23,9 @@ def answer_question(question: str) -> dict:
         chroma_path = Path(CHROMA_DIR)
 
         # Rebuild DB if missing OR empty
-        if not chroma_path.exists() or not any(chroma_path.iterdir()):
+        chroma_path.mkdir(parents=True, exist_ok=True)
+
+        if not any(chroma_path.iterdir()):
             init_chroma()
 
         embeddings = HuggingFaceEmbeddings(
@@ -60,7 +62,7 @@ def answer_question(question: str) -> dict:
         }
 
     except Exception as e:
-        raise HTTPException(
-            status_code = 500,
-            detail = f"RAG Pipeline failed: {str(e)}"
-        )
+        import traceback
+        print("🔥🔥🔥 FULL TRACEBACK 🔥🔥🔥")
+        print(traceback.format_exc())
+        raise

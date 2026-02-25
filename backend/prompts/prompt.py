@@ -20,5 +20,7 @@ Document Context:
 User Question:
 {question}
 
+Answer clearly and concisley
+
 Answer:
 """

@@ -61,11 +61,10 @@ class QueryResponse(BaseModel):
 @limiter.limit("10/minute")
 def query_knowledge_base(
     request: Request,
-    payload: QueryRequest
+    payload: QueryRequest,
 ):
     logger.info(f"Received query: {payload.question}")
-    response = answer_question(payload.question)
-    return response
+    return answer_question(payload.question)
 
 
 @app.get("/health")

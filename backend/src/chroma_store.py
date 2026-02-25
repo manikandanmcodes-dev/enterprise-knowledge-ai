@@ -31,4 +31,9 @@ def init_chroma():
         persist_directory=str(chroma_path)
     )
 
+    #vector_db.persist()
+
     print("✅ Chroma DB created successfully")
+
+#if __name__ == "__main__":
+    #init_chroma()
