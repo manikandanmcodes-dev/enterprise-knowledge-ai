@@ -18,42 +18,48 @@ load_dotenv()
 
 # --- RAG Answer ---
 def answer_question(question: str) -> dict:
-    # ✅ Lazy init (runs only when API is called)
-    if not Path(CHROMA_DIR).exists():
-        init_chroma()
+    try:
+        chroma_path = Path(CHROMA_DIR)
 
-    # --- Embeddings ---
-    embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
+        # Rebuild DB if missing OR empty
+        if not chroma_path.exists() or not any(chroma_path.iterdir()):
+            init_chroma()
 
-    # --- Vector DB ---
-    vector_db = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        embedding_function=embeddings
-    )
+        embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        )
 
-    # --- LLM ---
-    llm = ChatGroq(
-        api_key=GROQ_API_KEY,
-        model=LLM_MODEL,
-        temperature=LLM_TEMPERATURE,
-        max_tokens=LLM_MAX_TOKENS
-    )
+        vector_db = Chroma(
+            persist_directory=str(chroma_path),
+            embedding_function=embeddings
+        )
 
-    docs = vector_db.max_marginal_relevance_search(
-        question,
-        k=6,
-        fetch_k=20
-    )
+        docs = vector_db.max_marginal_relevance_search(
+            question,
+            k=6,
+            fetch_k=20
+        )
 
-    context = "\n\n".join(doc.page_content for doc in docs) if docs else ""
-    sources = list({doc.metadata.get("source", "unknown") for doc in docs})
+        context = "\n\n".join(doc.page_content for doc in docs) if docs else ""
+        sources = list({doc.metadata.get("source", "unknown") for doc in docs})
 
-    prompt = get_rag_prompt(context, question)
-    response = llm.invoke(prompt)
+        llm = ChatGroq(
+            api_key=GROQ_API_KEY,
+            model=LLM_MODEL,
+            temperature=LLM_TEMPERATURE,
+            max_tokens=LLM_MAX_TOKENS
+        )
 
-    return {
-        "answer": response.content,
-        "sources": sources
-    }
+        prompt = get_rag_prompt(context, question)
+        response = llm.invoke(prompt)
+
+        return {
+            "answer": response.content,
+            "sources": sources
+        }
+
+    except Exception as e:
+        return {
+            "error": "Query failed",
+            "detail": str(e)
+        }
